@@ -34,14 +34,20 @@ export default function JamesModel({
     const container = containerRef.current;
     if (!container) return;
 
-    // Dimensions
+    // Dimensions & Mobile Detection
+    const isMobileInitial = typeof window !== "undefined" && window.innerWidth < 640;
     let width = container.clientWidth || 600;
     let height = container.clientHeight || 600;
 
     // Scene, Camera, Renderer
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(0, 0, 3.2);
+    const camera = new THREE.PerspectiveCamera(
+      isMobileInitial ? 42 : 40,
+      width / height,
+      0.1,
+      100
+    );
+    camera.position.set(0, 0, isMobileInitial ? 2.95 : 3.2);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -84,9 +90,11 @@ export default function JamesModel({
     const modelGroup = new THREE.Group();
     scene.add(modelGroup);
 
-    // Mouse tracking state
+    // Interaction tracking state
     const targetRotation = { x: 0, y: 0 };
-    let baseModelCenterY = 0;
+    // Responsive vertical positioning: on mobile sit slightly lower (-0.30) to give clearance under top para box; on desktop (-0.46)
+    let baseModelCenterY = isMobileInitial ? -0.30 : -0.46;
+    let lastInteractionTime = performance.now();
 
     // Visibility observer to pause Three.js render loop when hero is off-screen (DRASTIC LAG REDUCTION)
     let isVisible = true;
@@ -122,12 +130,14 @@ export default function JamesModel({
 
         // Auto-scale to fit hero viewport proportionally (refined size matching user request)
         const maxDimension = Math.max(size.x, size.y, size.z);
-        const desiredScale = scale / maxDimension;
+        const isMobile = window.innerWidth < 640;
+        const currentScale = isMobile ? scale * 0.95 : scale;
+        const desiredScale = currentScale / maxDimension;
         modelGroup.scale.set(desiredScale, desiredScale, desiredScale);
 
-        // Position model lower down so the FLORIA title behind is clearly visible
-        modelGroup.position.set(0, -0.46, 0);
-        baseModelCenterY = modelGroup.position.y;
+        // Position model: responsive height
+        baseModelCenterY = isMobile ? -0.30 : -0.46;
+        modelGroup.position.set(0, baseModelCenterY, 0);
 
         // Ensure proper material rendering and specular highlights
         model.traverse((child) => {
@@ -165,34 +175,47 @@ export default function JamesModel({
     // Global mouse move handler for head & eye tracking
     const handleMouseMove = (e: MouseEvent) => {
       if (!isVisible) return;
-      // Normalized mouse coordinates: -1 to 1 across the window
+      lastInteractionTime = performance.now();
       const normX = (e.clientX / window.innerWidth) * 2 - 1;
       const normY = -(e.clientY / window.innerHeight) * 2 + 1;
-
-      // Map to natural head turn angles (radians)
-      // Horizontal yaw: up to ~28 degrees
       targetRotation.y = normX * 0.48;
-      // Vertical pitch: up to ~18 degrees
       targetRotation.x = -normY * 0.32;
     };
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    // Mobile touch move handler: allows phone users to look around by dragging/touching
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isVisible || !e.touches[0]) return;
+      lastInteractionTime = performance.now();
+      const touch = e.touches[0];
+      const normX = (touch.clientX / window.innerWidth) * 2 - 1;
+      const normY = -(touch.clientY / window.innerHeight) * 2 + 1;
+      targetRotation.y = normX * 0.45;
+      targetRotation.x = -normY * 0.28;
+    };
 
-    // Handle Resize
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchstart", handleTouchMove, { passive: true });
+
+    // Handle Resize (handles orientation changes and mobile viewports)
     const handleResize = () => {
       if (!container) return;
       const w = container.clientWidth || 600;
       const h = container.clientHeight || 600;
+      const mobile = window.innerWidth < 640;
       camera.aspect = w / h;
+      camera.fov = mobile ? 42 : 40;
+      camera.position.z = mobile ? 2.95 : 3.2;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      baseModelCenterY = mobile ? -0.30 : -0.46;
     };
 
     window.addEventListener("resize", handleResize);
 
     // Animation & Render Loop
     let animId: number;
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -200,16 +223,30 @@ export default function JamesModel({
       // PERFORMANCE OPTIMIZATION: Skip render calculations completely when hero is scrolled off-screen
       if (!isVisible) return;
 
-      const elapsedTime = clock.getElapsedTime();
+      const now = performance.now();
+      const elapsedTime = (now - startTime) * 0.001;
+      const timeSinceInteraction = (now - lastInteractionTime) * 0.001;
+
+      // Dynamic idle gaze: on mobile or when user isn't actively moving mouse, James naturally glances around gently
+      let effectiveTargetY = targetRotation.y;
+      let effectiveTargetX = targetRotation.x;
+
+      if (timeSinceInteraction > 2.0) {
+        const ambientYaw = Math.sin(elapsedTime * 0.75) * 0.16 + Math.sin(elapsedTime * 0.32) * 0.08;
+        const ambientPitch = Math.cos(elapsedTime * 0.5) * 0.06;
+        const blend = Math.min((timeSinceInteraction - 2.0) / 2.0, 1.0);
+        effectiveTargetY = THREE.MathUtils.lerp(targetRotation.y, ambientYaw, blend);
+        effectiveTargetX = THREE.MathUtils.lerp(targetRotation.x, ambientPitch, blend);
+      }
 
       if (modelGroup) {
         // Smooth lerp easing for head and eye tracking
         const lerpSpeed = 0.065;
-        modelGroup.rotation.y += (targetRotation.y - modelGroup.rotation.y) * lerpSpeed;
-        modelGroup.rotation.x += (targetRotation.x - modelGroup.rotation.x) * lerpSpeed;
+        modelGroup.rotation.y += (effectiveTargetY - modelGroup.rotation.y) * lerpSpeed;
+        modelGroup.rotation.x += (effectiveTargetX - modelGroup.rotation.x) * lerpSpeed;
 
         // Subtle tilt/roll on Z axis for organic realistic head tilt
-        const targetZ = -targetRotation.y * 0.08;
+        const targetZ = -effectiveTargetY * 0.08;
         modelGroup.rotation.z += (targetZ - modelGroup.rotation.z) * lerpSpeed;
 
         // Organic micro-breathing idle motion
@@ -226,6 +263,8 @@ export default function JamesModel({
       cancelAnimationFrame(animId);
       visibilityObserver.disconnect();
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchstart", handleTouchMove);
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
       if (renderer.domElement && container.contains(renderer.domElement)) {
