@@ -21,6 +21,11 @@ export const metadata: Metadata = {
   title: "James Aathithyan — Full-Stack Developer",
   description:
     "Final-year B.Tech Information Technology student at PPG Institute of Technology and full-stack developer specializing in MERN applications, REST APIs, and real-time systems.",
+  icons: {
+    icon: "/james3d-logo.png",
+    shortcut: "/james3d-logo.png",
+    apple: "/james3d-logo.png",
+  },
 };
 
 export default function RootLayout({

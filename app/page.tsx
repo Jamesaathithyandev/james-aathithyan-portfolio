@@ -207,8 +207,13 @@ export default function FloriaHeroPage() {
             Enhanced readability and responsive clearance
         ========================================================================= */}
         <header className="w-full flex items-center justify-between z-20 relative gap-4">
-          {/* Top-Left brand title */}
-          <div className="px-3.5 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/15 shadow-[0_4px_16px_rgba(0,0,0,0.6)] shrink-0">
+          {/* Top-Left brand title with James3D Face Logo Icon */}
+          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 shadow-[0_4px_16px_rgba(0,0,0,0.6)] shrink-0 group hover:border-cyan-500/40 transition-all duration-300">
+            <img
+              src="/james3d-logo.png"
+              alt="James3D Logo"
+              className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-white/30 shadow-[0_0_10px_rgba(0,240,255,0.4)] transition-transform duration-300 group-hover:scale-110"
+            />
             <span className="text-[11px] sm:text-xs md:text-[13px] font-bold tracking-[0.22em] uppercase text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               JAMES AATHITHYAN
             </span>

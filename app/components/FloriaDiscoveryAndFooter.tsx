@@ -1093,8 +1093,13 @@ export default function FloriaDiscoveryAndFooter() {
 
         {/* Legal & Sub-Footer Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/[0.06] text-[10px] font-mono text-zinc-400">
-          <div>
-            © 2026 JAMES AATHITHYAN • B.TECH IT // PPG INSTITUTE OF TECHNOLOGY
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/james3d-logo.png"
+              alt="James3D Logo"
+              className="w-5 h-5 rounded-full object-cover border border-white/20 shadow-[0_0_8px_rgba(0,240,255,0.3)]"
+            />
+            <span>© 2026 JAMES AATHITHYAN • B.TECH IT // PPG INSTITUTE OF TECHNOLOGY</span>
           </div>
           <div className="flex items-center gap-6">
             <a href="https://github.com/Jamesaathithyandev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
