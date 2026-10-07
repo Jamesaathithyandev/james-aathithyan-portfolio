@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import MovingStarsBackground from "./MovingStarsBackground";
+import ScrollReveal from "./ScrollReveal";
 
 interface PortfolioItem {
   id: string;
@@ -645,32 +647,18 @@ export default function FloriaDiscoveryAndFooter() {
     <div
       ref={sectionRef}
       onMouseMove={handleSectionMouseMove}
-      className="relative w-full bg-[#000000] text-white selection:bg-white selection:text-black z-30 overflow-hidden"
+      className="relative w-full bg-transparent text-white selection:bg-white selection:text-black z-30 overflow-hidden"
     >
-      {/* Background Architectural Grid Pattern with Interactive Cursor Spotlight */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:72px_72px]"
-        aria-hidden="true"
-      />
-
+      {/* Interactive Cursor Spotlight Sheen (gentle aurora lighting) */}
       <div
         ref={spotlightRef}
         className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
         style={{
           background:
-            "radial-gradient(650px circle at 50% 30%, rgba(34, 211, 238, 0.04) 0%, rgba(244, 63, 94, 0.02) 40%, transparent 80%)",
+            "radial-gradient(650px circle at 50% 30%, rgba(34, 211, 238, 0.05) 0%, rgba(244, 63, 94, 0.02) 40%, transparent 80%)",
         }}
         aria-hidden="true"
       />
-
-      <div
-        className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-60"
-        aria-hidden="true"
-      >
-        <div className="absolute top-[12%] left-[15%] w-[420px] h-[420px] bg-cyan-950/20 blur-[140px] rounded-full" />
-        <div className="absolute top-[40%] right-[10%] w-[450px] h-[450px] bg-fuchsia-950/20 blur-[150px] rounded-full" />
-        <div className="absolute bottom-[25%] left-[25%] w-[500px] h-[500px] bg-emerald-950/20 blur-[150px] rounded-full" />
-      </div>
 
       {/* =========================================================================
           SECTION HEADER: PROJECTS, EXPERIENCE & SKILLS
@@ -680,56 +668,74 @@ export default function FloriaDiscoveryAndFooter() {
         className="relative z-10 pt-20 sm:pt-28 md:pt-32 pb-12 px-6 sm:px-10 max-w-6xl mx-auto"
       >
         {/* Floating Top Field Journal Metadata */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-5 mb-8 sm:mb-12">
-          <div className="flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.28em] uppercase text-zinc-400">
-              DEVELOPER CODEX // VOL. 2026
-            </span>
+        <ScrollReveal delay={0} distance={20}>
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-5 mb-8 sm:mb-12">
+            <div className="flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.28em] uppercase text-zinc-400">
+                DEVELOPER CODEX // VOL. 2026
+              </span>
+            </div>
+            <div className="flex items-center gap-4 sm:gap-6 text-[10px] sm:text-[11px] font-mono tracking-[0.2em] text-zinc-500">
+              <span>[ ID: JAMES-DEV ]</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="hidden sm:inline">PPG INSTITUTE OF TECHNOLOGY</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="text-zinc-400">STATUS: OPEN TO ROLES</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4 sm:gap-6 text-[10px] sm:text-[11px] font-mono tracking-[0.2em] text-zinc-500">
-            <span>[ ID: JAMES-DEV ]</span>
-            <span className="hidden sm:inline">•</span>
-            <span className="hidden sm:inline">PPG INSTITUTE OF TECHNOLOGY</span>
-            <span className="hidden sm:inline">•</span>
-            <span className="text-zinc-400">STATUS: OPEN TO ROLES</span>
-          </div>
-        </div>
+        </ScrollReveal>
 
         {/* Section Headline */}
-        <div className="relative">
-          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-[0.03em] uppercase text-white font-serif leading-[1.05]">
-            Featured{" "}
-            <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent italic font-light">
-              Work & Skills
-            </span>
-          </h2>
+        <ScrollReveal delay={160} distance={32}>
+          <div className="relative">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-[0.03em] uppercase text-white font-serif leading-[1.05]">
+              Featured{" "}
+              <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent italic font-light">
+                Work & Skills
+              </span>
+            </h2>
+          </div>
+        </ScrollReveal>
 
+        {/* Section Subtitle Description */}
+        <ScrollReveal delay={380} distance={24}>
           <div className="mt-3 sm:mt-4 max-w-2xl">
             <p className="text-xs sm:text-sm md:text-base text-zinc-400 font-light leading-relaxed">
               Full-stack MERN applications, deployed client websites, verified achievements, and core technical skill matrices built by James Aathithyan.
             </p>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* =========================================================================
           EDITORIAL SPECIMEN CARD GRID (Interactive 3D Holographic Cards)
-          Increased bottom padding for staggered card layout clearance
+          First row and second row cards fade in one by one
       ========================================================================= */}
-      <section
-        ref={sectionRef}
-        onMouseMove={handleSectionMouseMove}
-        className="relative z-10 px-4 sm:px-8 max-w-6xl mx-auto pb-28 sm:pb-36"
-      >
+      <section className="relative z-10 px-4 sm:px-8 max-w-6xl mx-auto pb-28 sm:pb-36">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8 justify-items-center items-start">
-          {PORTFOLIO_ITEMS.map((item) => (
-            <InteractivePortfolioCard
-              key={item.id}
-              item={item}
-              onOpenDossier={(it) => setSelectedDossier(it)}
-            />
-          ))}
+          {PORTFOLIO_ITEMS.map((item, index) => {
+            // First row (Cards 1, 2, 3) fades in one by one: 100ms, 340ms, 580ms
+            // Second row (Cards 4, 5, 6) fades in one by one: 650ms, 890ms, 1130ms
+            const isRow1 = index < 3;
+            const staggerDelay = isRow1
+              ? 100 + index * 240
+              : 650 + (index - 3) * 240;
+
+            return (
+              <ScrollReveal
+                key={item.id}
+                delay={staggerDelay}
+                distance={40}
+                className="w-full flex justify-center"
+              >
+                <InteractivePortfolioCard
+                  item={item}
+                  onOpenDossier={(it) => setSelectedDossier(it)}
+                />
+              </ScrollReveal>
+            );
+          })}
         </div>
       </section>
 
@@ -738,120 +744,139 @@ export default function FloriaDiscoveryAndFooter() {
           Preserves complete developer portfolio structure with intentional placeholders
       ========================================================================= */}
       <section className="relative z-10 px-4 sm:px-8 max-w-6xl mx-auto pb-20 sm:pb-28 border-t border-white/[0.08] pt-14 sm:pt-20">
-        <div className="mb-8 sm:mb-10">
-          <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-zinc-500 block mb-2">
-            // EXTENDED ARCHIVE & PORTFOLIO EXTENSIONS
-          </span>
-          <h3 className="text-2xl sm:text-3xl font-serif text-white tracking-wide">
-            Additional Records & Details
-          </h3>
-        </div>
+        <ScrollReveal delay={0} distance={20}>
+          <div className="mb-2">
+            <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-zinc-500 block">
+              // EXTENDED ARCHIVE & PORTFOLIO EXTENSIONS
+            </span>
+          </div>
+        </ScrollReveal>
+
+        <ScrollReveal delay={180} distance={28}>
+          <div className="mb-8 sm:mb-10">
+            <h3 className="text-2xl sm:text-3xl font-serif text-white tracking-wide">
+              Additional Records & Details
+            </h3>
+          </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {/* 1. Additional Projects Placeholder */}
-          <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
-                <span>PROJECT ARCHIVE</span>
-                <span className="text-zinc-500 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/10">UPCOMING</span>
+          <ScrollReveal delay={100} distance={28} className="h-full">
+            <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
+                  <span>PROJECT ARCHIVE</span>
+                  <span className="text-zinc-500 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/10">UPCOMING</span>
+                </div>
+                <h4 className="text-base font-semibold text-white">Project Coming Soon</h4>
+                <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
+                  Project details will be added soon.
+                </p>
               </div>
-              <h4 className="text-base font-semibold text-white">Project Coming Soon</h4>
-              <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
-                Project details will be added soon.
-              </p>
+              <div className="mt-4 pt-3 border-t border-white/[0.06] text-[9.5px] font-mono text-zinc-400 flex flex-col gap-0.5">
+                <span>GitHub link — Not added yet</span>
+                <span>Live demo — Not added yet</span>
+              </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-white/[0.06] text-[9.5px] font-mono text-zinc-400 flex flex-col gap-0.5">
-              <span>GitHub link — Not added yet</span>
-              <span>Live demo — Not added yet</span>
-            </div>
-          </div>
+          </ScrollReveal>
 
           {/* 2. Additional Certifications Placeholder */}
-          <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
-                <span>CREDENTIALS</span>
-                <span className="text-cyan-400 px-2 py-0.5 rounded-full bg-cyan-950/40 border border-cyan-500/30">IN PROGRESS</span>
+          <ScrollReveal delay={340} distance={28} className="h-full">
+            <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
+                  <span>CREDENTIALS</span>
+                  <span className="text-cyan-400 px-2 py-0.5 rounded-full bg-cyan-950/40 border border-cyan-500/30">IN PROGRESS</span>
+                </div>
+                <h4 className="text-base font-semibold text-white">Certifications</h4>
+                <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
+                  Additional certifications will be added soon.
+                </p>
               </div>
-              <h4 className="text-base font-semibold text-white">Certifications</h4>
-              <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
-                Additional certifications will be added soon.
-              </p>
+              <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-cyan-400 flex items-center justify-between">
+                <span className="truncate">Oracle OCI 2025 AI Associate</span>
+                <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/40 text-cyan-300">ACTIVE</span>
+              </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-cyan-400 flex items-center justify-between">
-              <span className="truncate">Oracle OCI 2025 AI Associate</span>
-              <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/40 text-cyan-300">ACTIVE</span>
-            </div>
-          </div>
+          </ScrollReveal>
 
           {/* 3. Additional Achievements Placeholder */}
-          <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
-                <span>HONORS</span>
-                <span className="text-amber-400 px-2 py-0.5 rounded-full bg-amber-950/40 border border-amber-500/30">ARCHIVE</span>
+          <ScrollReveal delay={580} distance={28} className="h-full">
+            <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
+                  <span>HONORS</span>
+                  <span className="text-amber-400 px-2 py-0.5 rounded-full bg-amber-950/40 border border-amber-500/30">ARCHIVE</span>
+                </div>
+                <h4 className="text-base font-semibold text-white">Achievements</h4>
+                <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
+                  More achievements will be added soon.
+                </p>
               </div>
-              <h4 className="text-base font-semibold text-white">Achievements</h4>
-              <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
-                More achievements will be added soon.
-              </p>
+              <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-amber-400 flex items-center justify-between">
+                <span className="truncate">2nd Place National Hackathon</span>
+                <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-300">AWARD</span>
+              </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-amber-400 flex items-center justify-between">
-              <span className="truncate">2nd Place National Hackathon</span>
-              <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-300">AWARD</span>
-            </div>
-          </div>
+          </ScrollReveal>
 
           {/* 4. Services Placeholder */}
-          <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
-                <span>SERVICES</span>
-                <span className="text-zinc-500 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/10">INQUIRY</span>
+          <ScrollReveal delay={700} distance={28} className="h-full">
+            <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
+                  <span>SERVICES</span>
+                  <span className="text-zinc-500 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/10">INQUIRY</span>
+                </div>
+                <h4 className="text-base font-semibold text-white">Services</h4>
+                <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
+                  Services — Details coming soon
+                </p>
               </div>
-              <h4 className="text-base font-semibold text-white">Services</h4>
-              <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
-                Services — Details coming soon
-              </p>
+              <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-zinc-500">
+                Freelance & Contract Development
+              </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-zinc-500">
-              Freelance & Contract Development
-            </div>
-          </div>
+          </ScrollReveal>
 
           {/* 5. Testimonials Placeholder */}
-          <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
-                <span>FEEDBACK</span>
-                <span className="text-zinc-500 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/10">CLIENTS</span>
+          <ScrollReveal delay={940} distance={28} className="h-full">
+            <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
+                  <span>FEEDBACK</span>
+                  <span className="text-zinc-500 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/10">CLIENTS</span>
+                </div>
+                <h4 className="text-base font-semibold text-white">Testimonials</h4>
+                <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
+                  Testimonials will be added soon.
+                </p>
               </div>
-              <h4 className="text-base font-semibold text-white">Testimonials</h4>
-              <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
-                Testimonials will be added soon.
-              </p>
+              <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-zinc-500">
+                Testimonials — Coming Soon
+              </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-zinc-500">
-              Testimonials — Coming Soon
-            </div>
-          </div>
+          </ScrollReveal>
 
           {/* 6. Interests Placeholder */}
-          <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
-                <span>PERSONAL</span>
-                <span className="text-zinc-500 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/10">PROFILE</span>
+          <ScrollReveal delay={1180} distance={28} className="h-full">
+            <div className="p-5 rounded-2xl bg-[#090a0d]/85 hover:bg-[#0d0f14]/95 border border-white/[0.08] hover:border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300 h-full min-h-[190px] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-wider mb-2.5">
+                  <span>PERSONAL</span>
+                  <span className="text-zinc-500 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/10">PROFILE</span>
+                </div>
+                <h4 className="text-base font-semibold text-white">Interests</h4>
+                <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
+                  Interests — Details coming soon
+                </p>
               </div>
-              <h4 className="text-base font-semibold text-white">Interests</h4>
-              <p className="text-xs text-zinc-400 font-light mt-1.5 leading-relaxed">
-                Interests — Details coming soon
-              </p>
+              <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-zinc-500">
+                Interests — Coming Soon
+              </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-zinc-500">
-              Interests — Coming Soon
-            </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -866,56 +891,66 @@ export default function FloriaDiscoveryAndFooter() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-14">
           {/* Left Column: Direct Contact Information */}
           <div className="lg:col-span-5 flex flex-col justify-start space-y-6 sm:space-y-7">
-            <div>
+            <ScrollReveal delay={100} distance={24}>
               <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-zinc-400 block mb-3">
                 // CONTACT & INQUIRIES
               </span>
+            </ScrollReveal>
+
+            <ScrollReveal delay={260} distance={30}>
               <h3 className="text-3xl sm:text-4xl font-serif text-white font-medium tracking-wide">
                 Let&apos;s build something together.
               </h3>
-              <p className="mt-3.5 text-sm text-zinc-300 font-light leading-relaxed">
+            </ScrollReveal>
+
+            <ScrollReveal delay={420} distance={24}>
+              <p className="text-sm text-zinc-300 font-light leading-relaxed">
                 Open for full-time full-stack engineering opportunities, MERN projects, and freelance client engagements. Feel free to reach out directly.
               </p>
-            </div>
+            </ScrollReveal>
 
             {/* Direct Contact Links */}
-            <div className="space-y-3.5 text-xs font-mono">
-              <a
-                href="mailto:jamesaathithyandev@gmail.com"
-                className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/30 text-zinc-300 hover:text-white transition-all group"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="text-cyan-400 shrink-0">✉</span>
-                  <span className="truncate text-[11px] sm:text-xs">jamesaathithyandev@gmail.com</span>
-                </div>
-                <span className="text-zinc-500 group-hover:text-white transition-colors shrink-0 ml-2">↗</span>
-              </a>
+            <ScrollReveal delay={580} distance={24}>
+              <div className="space-y-3.5 text-xs font-mono">
+                <a
+                  href="mailto:jamesaathithyandev@gmail.com"
+                  className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/30 text-zinc-300 hover:text-white transition-all group"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="text-cyan-400 shrink-0">✉</span>
+                    <span className="truncate text-[11px] sm:text-xs">jamesaathithyandev@gmail.com</span>
+                  </div>
+                  <span className="text-zinc-500 group-hover:text-white transition-colors shrink-0 ml-2">↗</span>
+                </a>
 
-              <a
-                href="tel:+917695991483"
-                className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/30 text-zinc-300 hover:text-white transition-all group"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="text-emerald-400 shrink-0">☎</span>
-                  <span className="text-[11px] sm:text-xs">+91 7695991483</span>
-                </div>
-                <span className="text-zinc-500 group-hover:text-white transition-colors shrink-0 ml-2">↗</span>
-              </a>
+                <a
+                  href="tel:+917695991483"
+                  className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/30 text-zinc-300 hover:text-white transition-all group"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="text-emerald-400 shrink-0">☎</span>
+                    <span className="text-[11px] sm:text-xs">+91 7695991483</span>
+                  </div>
+                  <span className="text-zinc-500 group-hover:text-white transition-colors shrink-0 ml-2">↗</span>
+                </a>
 
-              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] text-zinc-400 flex items-center justify-between text-[11px] sm:text-xs">
-                <span>Location:</span>
-                <span className="text-white">Coimbatore, Tamil Nadu, India</span>
+                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] text-zinc-400 flex items-center justify-between text-[11px] sm:text-xs">
+                  <span>Location:</span>
+                  <span className="text-white">Coimbatore, Tamil Nadu, India</span>
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
 
-            <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-500 pt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Response Time: Typically within 24 hours</span>
-            </div>
+            <ScrollReveal delay={720} distance={18}>
+              <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-500 pt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Response Time: Typically within 24 hours</span>
+              </div>
+            </ScrollReveal>
           </div>
 
           {/* Right Column: Contact Message Form */}
-          <div className="lg:col-span-7">
+          <ScrollReveal delay={250} distance={36} className="lg:col-span-7">
             <form
               onSubmit={handleFormSubmit}
               className="p-6 sm:p-8 rounded-3xl bg-[#090a0d]/90 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-xl space-y-4"
@@ -973,10 +1008,14 @@ export default function FloriaDiscoveryAndFooter() {
                 {submitted ? "Message Sent Successfully ✓" : "Send Message →"}
               </button>
             </form>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
+      {/* =========================================================================
+          DEVELOPER ART-BOOK FOOTER
+          Minimal, monumental typographic final page of the exhibition
+      ========================================================================= */}
       {/* =========================================================================
           DEVELOPER ART-BOOK FOOTER
           Minimal, monumental typographic final page of the exhibition
@@ -987,132 +1026,142 @@ export default function FloriaDiscoveryAndFooter() {
       >
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 sm:gap-14 pb-14 border-b border-white/[0.08]">
           <div className="md:col-span-5 flex flex-col justify-between">
-            <div>
-              <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-zinc-400">
-                // ARCHIVE MANIFESTO
-              </span>
-              <p className="mt-4 text-base sm:text-lg text-zinc-300 font-light leading-relaxed max-w-md">
-                James Aathithyan is a full-stack developer and B.Tech Information Technology student at PPG Institute of Technology, dedicated to building real-time applications and clean REST architectures.
-              </p>
-            </div>
+            <ScrollReveal delay={100} distance={24}>
+              <div>
+                <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-zinc-400">
+                  // ARCHIVE MANIFESTO
+                </span>
+                <p className="mt-4 text-base sm:text-lg text-zinc-300 font-light leading-relaxed max-w-md">
+                  James Aathithyan is a full-stack developer and B.Tech Information Technology student at PPG Institute of Technology, dedicated to building real-time applications and clean REST architectures.
+                </p>
+              </div>
 
-            <div className="mt-6 flex items-center gap-2 text-[10px] font-mono text-zinc-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span>Education: PPG Institute of Technology (2023–2027) • CGPA: 7.0</span>
-            </div>
+              <div className="mt-6 flex items-center gap-2 text-[10px] font-mono text-zinc-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span>Education: PPG Institute of Technology (2023–2027) • CGPA: 7.0</span>
+              </div>
+            </ScrollReveal>
           </div>
 
-          <div className="md:col-span-4 grid grid-cols-2 gap-8 text-xs font-mono tracking-wider">
-            <div>
-              <span className="text-zinc-400 uppercase text-[10px] block mb-4">
-                EXPLORE
-              </span>
-              <ul className="space-y-3 text-zinc-300">
-                {[
-                  { name: "Home", href: "#hero" },
-                  { name: "About", href: "#explore" },
-                  { name: "Projects", href: "#projects" },
-                  { name: "Experience", href: "#projects" },
-                  { name: "Contact", href: "#contact" },
-                ].map((item) => (
-                  <li key={item.name}>
-                    <a
-                      href={item.href}
-                      className="hover:text-white transition-colors duration-200 block"
-                    >
-                      {item.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="md:col-span-7">
+            <ScrollReveal delay={320} distance={24}>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-xs font-mono tracking-wider">
+                <div>
+                  <span className="text-zinc-400 uppercase text-[10px] block mb-4">
+                    EXPLORE
+                  </span>
+                  <ul className="space-y-3 text-zinc-300">
+                    {[
+                      { name: "Home", href: "#hero" },
+                      { name: "About", href: "#explore" },
+                      { name: "Projects", href: "#projects" },
+                      { name: "Experience", href: "#projects" },
+                      { name: "Contact", href: "#contact" },
+                    ].map((item) => (
+                      <li key={item.name}>
+                        <a
+                          href={item.href}
+                          className="hover:text-white transition-colors duration-200 block"
+                        >
+                          {item.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-            <div>
-              <span className="text-zinc-400 uppercase text-[10px] block mb-4">
-                EXPERIENCE
-              </span>
-              <ul className="space-y-3 text-zinc-300">
-                {[
-                  "Freelance Developer",
-                  "Techinta MERN Intern",
-                  "National Hackathon",
-                  "Oracle OCI Certified",
-                  "MERN Task App",
-                ].map((item) => (
-                  <li key={item}>
-                    <a
-                      href="#projects"
-                      className="hover:text-white transition-colors duration-200 block"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+                <div>
+                  <span className="text-zinc-400 uppercase text-[10px] block mb-4">
+                    EXPERIENCE
+                  </span>
+                  <ul className="space-y-3 text-zinc-300">
+                    {[
+                      "Freelance Developer",
+                      "Techinta MERN Intern",
+                      "National Hackathon",
+                      "Oracle OCI Certified",
+                      "MERN Task App",
+                    ].map((item) => (
+                      <li key={item}>
+                        <a
+                          href="#projects"
+                          className="hover:text-white transition-colors duration-200 block"
+                        >
+                          {item}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-          <div className="md:col-span-3 text-xs font-mono tracking-wider">
-            <span className="text-zinc-400 uppercase text-[10px] block mb-4">
-              CHANNELS
-            </span>
-            <ul className="space-y-3 text-zinc-300">
-              {[
-                { name: "/GitHub", url: "https://github.com/Jamesaathithyandev" },
-                {
-                  name: "/LinkedIn",
-                  url: "https://www.linkedin.com/in/james-aathithyan-1412931b9/",
-                },
-                { name: "/Email", url: "mailto:jamesaathithyandev@gmail.com" },
-                { name: "/Phone", url: "tel:+917695991483" },
-              ].map((social) => (
-                <li key={social.name}>
-                  <a
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-white transition-colors duration-200 flex items-center justify-between group"
-                  >
-                    <span>{social.name}</span>
-                    <span className="text-[10px] text-zinc-400 group-hover:text-white transition-colors">
-                      ↗
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+                <div>
+                  <span className="text-zinc-400 uppercase text-[10px] block mb-4">
+                    CHANNELS
+                  </span>
+                  <ul className="space-y-3 text-zinc-300">
+                    {[
+                      { name: "/GitHub", url: "https://github.com/Jamesaathithyandev" },
+                      {
+                        name: "/LinkedIn",
+                        url: "https://www.linkedin.com/in/james-aathithyan-1412931b9/",
+                      },
+                      { name: "/Email", url: "mailto:jamesaathithyandev@gmail.com" },
+                      { name: "/Phone", url: "tel:+917695991483" },
+                    ].map((social) => (
+                      <li key={social.name}>
+                        <a
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-white transition-colors duration-200 flex items-center justify-between group"
+                        >
+                          <span>{social.name}</span>
+                          <span className="text-[10px] text-zinc-400 group-hover:text-white transition-colors">
+                            ↗
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
 
         {/* Oversized Monumental AATHITHYAN Typography - Balanced scale with solid white contrast */}
-        <div className="py-10 sm:py-14 md:py-16 text-center select-none overflow-hidden max-w-full">
-          <h1 className="text-[8.5vw] sm:text-[9.5vw] md:text-[10vw] font-serif font-black tracking-[-0.02em] leading-none uppercase text-white drop-shadow-[0_0_60px_rgba(255,255,255,0.2)] whitespace-nowrap">
-            AATHITHYAN
-          </h1>
-        </div>
+        <ScrollReveal delay={180} distance={42}>
+          <div className="py-10 sm:py-14 md:py-16 text-center select-none overflow-hidden max-w-full">
+            <h1 className="text-[8.5vw] sm:text-[9.5vw] md:text-[10vw] font-serif font-black tracking-[-0.02em] leading-none uppercase text-white drop-shadow-[0_0_60px_rgba(255,255,255,0.2)] whitespace-nowrap">
+              AATHITHYAN
+            </h1>
+          </div>
+        </ScrollReveal>
 
         {/* Legal & Sub-Footer Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/[0.06] text-[10px] font-mono text-zinc-400">
-          <div className="flex items-center gap-2.5">
-            <img
-              src="/james3d-logo.png"
-              alt="James3D Logo"
-              className="w-5 h-5 object-contain drop-shadow-[0_0_8px_rgba(0,240,255,0.4)]"
-            />
-            <span>© 2026 JAMES AATHITHYAN • B.TECH IT // PPG INSTITUTE OF TECHNOLOGY</span>
+        <ScrollReveal delay={360} distance={18}>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/[0.06] text-[10px] font-mono text-zinc-400">
+            <div className="flex items-center gap-2.5">
+              <img
+                src="/james3d-logo.png"
+                alt="James3D Logo"
+                className="w-5 h-5 object-contain drop-shadow-[0_0_8px_rgba(0,240,255,0.4)]"
+              />
+              <span>© 2026 JAMES AATHITHYAN • B.TECH IT // PPG INSTITUTE OF TECHNOLOGY</span>
+            </div>
+            <div className="flex items-center gap-6">
+              <a href="https://github.com/Jamesaathithyandev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                GITHUB
+              </a>
+              <a href="https://www.linkedin.com/in/james-aathithyan-1412931b9/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                LINKEDIN
+              </a>
+              <a href="mailto:jamesaathithyandev@gmail.com" className="hover:text-white transition-colors">
+                EMAIL
+              </a>
+            </div>
           </div>
-          <div className="flex items-center gap-6">
-            <a href="https://github.com/Jamesaathithyandev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-              GITHUB
-            </a>
-            <a href="https://www.linkedin.com/in/james-aathithyan-1412931b9/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-              LINKEDIN
-            </a>
-            <a href="mailto:jamesaathithyandev@gmail.com" className="hover:text-white transition-colors">
-              EMAIL
-            </a>
-          </div>
-        </div>
+        </ScrollReveal>
       </footer>
 
       {/* Interactive Dossier Modal */}

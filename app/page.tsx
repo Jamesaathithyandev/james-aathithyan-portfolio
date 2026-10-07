@@ -12,6 +12,7 @@ import WovenValleyScrollStory from "./components/WovenValleyScrollStory";
 import FloriaDiscoveryAndFooter from "./components/FloriaDiscoveryAndFooter";
 import FloriaHudNav from "./components/FloriaHudNav";
 import ModelPreloader from "./components/ModelPreloader";
+import MovingStarsBackground from "./components/MovingStarsBackground";
 
 export default function FloriaHeroPage() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -158,7 +159,10 @@ export default function FloriaHeroPage() {
   }, []);
 
   return (
-    <div className="relative w-full bg-[#000000] text-white selection:bg-white selection:text-black overflow-x-clip">
+    <div className="relative w-full bg-[#020206] text-white selection:bg-white selection:text-black overflow-x-clip min-h-screen">
+      {/* Global Living Moving Stars Universe across all sections (Hero to Footer) */}
+      <MovingStarsBackground />
+
       {/* High-Tech Cybernetic Loading Screen: Only closes once 84MB 3D Model is fully parsed */}
       <ModelPreloader progress={modelProgress} isReady={isModelReady} />
 
@@ -168,7 +172,7 @@ export default function FloriaHeroPage() {
       {/* =========================================================================
           HERO SECTION (Unmodified, exactly as configured)
       ========================================================================= */}
-      <section id="hero" className="min-h-screen w-full bg-[#000000] text-white flex items-center justify-center p-2.5 sm:p-6 md:p-8 lg:p-10 selection:bg-white selection:text-black overflow-hidden relative">
+      <section id="hero" className="min-h-screen w-full bg-transparent text-white flex items-center justify-center p-2.5 sm:p-6 md:p-8 lg:p-10 selection:bg-white selection:text-black overflow-hidden relative">
         {/* =========================================================================
             EDITORIAL FRAMED CANVAS CONTAINER
             Matching the exact inset thin bounding box from the reference image

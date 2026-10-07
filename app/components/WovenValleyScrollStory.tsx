@@ -487,20 +487,20 @@ export default function WovenValleyScrollStory() {
     <section
       ref={containerRef}
       id="explore"
-      className="relative w-full h-[280vh] bg-[#000000] text-white selection:bg-white selection:text-black z-30"
+      className="relative w-full h-[280vh] bg-transparent text-white selection:bg-white selection:text-black z-30"
       aria-label="Woven Valleys Interactive Exhibition"
     >
       {/* Sticky full-screen stage: Pinned at top-0 while user scrolls through 280vh */}
       <div
         ref={stageRef}
-        className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center bg-[#000000] select-none"
+        className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center bg-transparent select-none"
       >
         {/* Deep atmospheric ambient glow in initial state */}
         <div
           className="absolute inset-0 pointer-events-none transition-opacity duration-300"
           style={{
             background:
-              "radial-gradient(circle at 50% 50%, rgba(255, 180, 200, 0.06) 0%, rgba(0, 0, 0, 0.95) 70%, #000000 100%)",
+              "radial-gradient(circle at 50% 50%, rgba(255, 180, 200, 0.04) 0%, rgba(2, 2, 6, 0.4) 70%, transparent 100%)",
             opacity: Math.max(0, 1 - easeProgress * 1.5),
           }}
         />
@@ -596,59 +596,89 @@ export default function WovenValleyScrollStory() {
             CINEMATIC FULL-SCREEN ZOOM REVELATION OVERLAY
             Fades in smoothly as the canvas expands into full-screen (progress > 0.62)
         ========================================================================= */}
-        {scrollProgress > 0.6 && (
-          <div
-            className="absolute inset-0 z-30 pointer-events-none flex flex-col items-center justify-center text-center px-6 transition-all duration-200 select-none"
-            style={{
-              opacity: Math.max(0, Math.min((scrollProgress - 0.62) / 0.18, 1)),
-              transform: `translateY(${
-                (1 - Math.max(0, Math.min((scrollProgress - 0.62) / 0.18, 1))) * 24
-              }px) scale(${
-                0.95 + 0.05 * Math.max(0, Math.min((scrollProgress - 0.62) / 0.18, 1))
-              })`,
-            }}
-          >
-            {/* Cinematic dark atmospheric vignette for contrast over the landscape */}
-            <div
-              className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/55 pointer-events-none"
-              style={{
-                opacity: Math.max(0, Math.min((scrollProgress - 0.62) / 0.18, 1)) * 0.9,
-              }}
-            />
+        {scrollProgress > 0.6 && (() => {
+          const sp = scrollProgress;
+          // Staggered progressive appearance: each element reveals one after another
+          const pillProg = Math.max(0, Math.min((sp - 0.62) / 0.08, 1));
+          const titleProg = Math.max(0, Math.min((sp - 0.66) / 0.10, 1));
+          const statementProg = Math.max(0, Math.min((sp - 0.72) / 0.10, 1));
+          const promptProg = Math.max(0, Math.min((sp - 0.78) / 0.08, 1));
+          const bgOpacity = Math.max(0, Math.min((sp - 0.62) / 0.18, 1)) * 0.9;
 
-            {/* Typography content container */}
-            <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
-              {/* Eyebrow Pill */}
-              <div className="mb-3 sm:mb-4">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-[9.5px] sm:text-[11px] font-mono tracking-[0.28em] text-cyan-300 uppercase shadow-[0_8px_30px_rgba(0,0,0,0.8)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                  DISCOVERY // ARCHITECTURE
-                </span>
-              </div>
+          return (
+            <div className="absolute inset-0 z-30 pointer-events-none flex flex-col items-center justify-center text-center px-6 transition-all duration-200 select-none">
+              {/* Cinematic dark atmospheric vignette for contrast over the landscape */}
+              <div
+                className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/55 pointer-events-none transition-opacity duration-300"
+                style={{
+                  opacity: bgOpacity,
+                }}
+              />
 
-              {/* Monumental Headline */}
-              <h3 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-medium tracking-[0.03em] uppercase text-white leading-[1.08] drop-shadow-[0_8px_40px_rgba(0,0,0,0.9)]">
-                Crafting Modern{" "}
-                <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent italic font-light">
-                  Web Architectures
-                </span>
-              </h3>
+              {/* Typography content container */}
+              <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
+                {/* 1. Eyebrow Pill */}
+                <div
+                  className="mb-3 sm:mb-4 will-change-[opacity,transform] transition-all duration-300"
+                  style={{
+                    opacity: pillProg,
+                    transform: `translateY(${(1 - pillProg) * 20}px)`,
+                  }}
+                >
+                  <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-[9.5px] sm:text-[11px] font-mono tracking-[0.28em] text-cyan-300 uppercase shadow-[0_8px_30px_rgba(0,0,0,0.8)]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                    DISCOVERY // ARCHITECTURE
+                  </span>
+                </div>
 
-              {/* Supporting Developer Statement */}
-              <p className="mt-3.5 sm:mt-5 text-xs sm:text-sm md:text-base text-zinc-200 font-light max-w-xl leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
-                Full-stack MERN engineering, clean REST APIs, and real-time multi-user collaboration woven with precision.
-              </p>
+                {/* 2. Monumental Headline */}
+                <div
+                  className="will-change-[opacity,transform] transition-all duration-300"
+                  style={{
+                    opacity: titleProg,
+                    transform: `translateY(${(1 - titleProg) * 32}px)`,
+                  }}
+                >
+                  <h3 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-medium tracking-[0.03em] uppercase text-white leading-[1.08] drop-shadow-[0_8px_40px_rgba(0,0,0,0.9)]">
+                    Crafting Modern{" "}
+                    <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent italic font-light">
+                      Web Architectures
+                    </span>
+                  </h3>
+                </div>
 
-              {/* Scroll prompt to project archive */}
-              <div className="mt-6 sm:mt-8 flex items-center gap-2.5 text-[9.5px] sm:text-[10px] font-mono tracking-[0.25em] text-zinc-400 uppercase">
-                <span className="w-6 h-[1px] bg-white/25" />
-                <span>Scroll to Explore Projects</span>
-                <span className="text-cyan-400 animate-bounce">↓</span>
-                <span className="w-6 h-[1px] bg-white/25" />
+                {/* 3. Supporting Developer Statement */}
+                <div
+                  className="will-change-[opacity,transform] transition-all duration-300"
+                  style={{
+                    opacity: statementProg,
+                    transform: `translateY(${(1 - statementProg) * 24}px)`,
+                  }}
+                >
+                  <p className="mt-3.5 sm:mt-5 text-xs sm:text-sm md:text-base text-zinc-200 font-light max-w-xl leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
+                    Full-stack MERN engineering, clean REST APIs, and real-time multi-user collaboration woven with precision.
+                  </p>
+                </div>
+
+                {/* 4. Scroll prompt to project archive */}
+                <div
+                  className="mt-6 sm:mt-8 will-change-[opacity,transform] transition-all duration-300"
+                  style={{
+                    opacity: promptProg,
+                    transform: `translateY(${(1 - promptProg) * 16}px)`,
+                  }}
+                >
+                  <div className="flex items-center gap-2.5 text-[9.5px] sm:text-[10px] font-mono tracking-[0.25em] text-zinc-400 uppercase">
+                    <span className="w-6 h-[1px] bg-white/25" />
+                    <span>Scroll to Explore Projects</span>
+                    <span className="text-cyan-400 animate-bounce">↓</span>
+                    <span className="w-6 h-[1px] bg-white/25" />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
     </section>
   );
