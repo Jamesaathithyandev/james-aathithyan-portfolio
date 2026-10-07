@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 
 interface ModelPreloaderProps {
   progress: number;
@@ -9,66 +9,40 @@ interface ModelPreloaderProps {
 }
 
 export default function ModelPreloader({
+  progress,
   isReady,
   onFinished,
 }: ModelPreloaderProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [isCompletelyGone, setIsCompletelyGone] = useState(false);
-  const [bgColor, setBgColor] = useState<string>("#000000");
+  const [displayProgress, setDisplayProgress] = useState(0);
 
-  // Sample the video's corner pixel to extract background color for seamless blending
-  const sampleBgColor = useCallback(() => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas || video.readyState < 2) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    canvas.width = 8;
-    canvas.height = 8;
-    try {
-      ctx.drawImage(video, 0, 0, 8, 8);
-      const px = ctx.getImageData(0, 0, 1, 1).data;
-      const hex = `#${px[0].toString(16).padStart(2, "0")}${px[1].toString(16).padStart(2, "0")}${px[2].toString(16).padStart(2, "0")}`;
-      setBgColor(hex);
-    } catch {
-      // Security error on cross-origin — keep black
-    }
-  }, []);
-
-  // Auto-play video on mount
+  // Smoothly animate displayed progress toward actual progress
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    const tryPlay = () => video.play().catch(() => {});
-    video.addEventListener("canplay", tryPlay, { once: true });
-    video.addEventListener("loadeddata", sampleBgColor, { once: true });
-    tryPlay();
-    return () => {
-      video.removeEventListener("canplay", tryPlay);
-      video.removeEventListener("loadeddata", sampleBgColor);
-    };
-  }, [sampleBgColor]);
+    const target = isReady ? 100 : Math.max(displayProgress, progress);
+    if (target <= displayProgress) return;
+    const step = Math.ceil((target - displayProgress) / 6);
+    const id = setTimeout(() => setDisplayProgress((p) => Math.min(p + step, target)), 40);
+    return () => clearTimeout(id);
+  }, [progress, isReady, displayProgress]);
 
-  // When 3D model is loaded, smoothly fade out and reveal main page
+  // When 3D model is loaded, fade out and reveal the page
   useEffect(() => {
     if (isReady && !isFadingOut) {
       const exitTimer = setTimeout(() => {
         setIsFadingOut(true);
         setTimeout(() => {
-          if (videoRef.current) videoRef.current.pause();
           setIsCompletelyGone(true);
           onFinished?.();
         }, 800);
-      }, 400);
+      }, 500);
       return () => clearTimeout(exitTimer);
     }
   }, [isReady, isFadingOut, onFinished]);
 
-  // Safety fallback after 15s in case model loading stalls
+  // Safety fallback: dismiss after 15s regardless
   useEffect(() => {
-    const safetyTimer = setTimeout(() => {
+    const safety = setTimeout(() => {
       if (!isFadingOut) {
         setIsFadingOut(true);
         setTimeout(() => {
@@ -77,7 +51,7 @@ export default function ModelPreloader({
         }, 800);
       }
     }, 15000);
-    return () => clearTimeout(safetyTimer);
+    return () => clearTimeout(safety);
   }, [isFadingOut, onFinished]);
 
   if (isCompletelyGone) return null;
@@ -85,40 +59,72 @@ export default function ModelPreloader({
   return (
     <div
       role="status"
-      aria-label="Loading Intro"
-      style={{ backgroundColor: bgColor }}
-      className={`fixed inset-0 z-[100] flex items-center justify-center select-none transition-[opacity,transform] duration-[800ms] ease-out overflow-hidden ${
+      aria-label="Loading"
+      className={`fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center select-none transition-[opacity,transform] duration-[800ms] ease-out ${
         isFadingOut
-          ? "opacity-0 scale-[1.04] pointer-events-none"
+          ? "opacity-0 scale-[1.03] pointer-events-none"
           : "opacity-100 scale-100"
       }`}
     >
-      {/* Hidden canvas used only for background color sampling */}
-      <canvas ref={canvasRef} className="hidden" />
+      {/* Subtle corner decorations matching hero editorial frame */}
+      <span className="absolute top-5 left-5 w-5 h-5 border-t border-l border-white/20" />
+      <span className="absolute top-5 right-5 w-5 h-5 border-t border-r border-white/20" />
+      <span className="absolute bottom-5 left-5 w-5 h-5 border-b border-l border-white/20" />
+      <span className="absolute bottom-5 right-5 w-5 h-5 border-b border-r border-white/20" />
 
-      {/* Full-screen looping video — fills the viewport, background blends with sampled bgColor */}
-      <video
-        ref={videoRef}
-        src="/intro.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        onLoadedData={sampleBgColor}
-        onCanPlay={(e) => {
-          e.currentTarget.play().catch(() => {});
-        }}
-        className="absolute inset-0 w-full h-full object-contain select-none pointer-events-none"
-      />
+      {/* Center content */}
+      <div className="flex flex-col items-center gap-8 w-full max-w-xs px-6">
 
-      {/* Small spinning loading indicator — always centered */}
-      <div className="relative z-10 flex items-center justify-center pointer-events-none">
-        <div className="relative w-9 h-9 flex items-center justify-center">
-          <div className="w-full h-full rounded-full border-[2.5px] border-white/20 border-t-white border-r-white/70 animate-spin shadow-[0_0_18px_rgba(255,255,255,0.35)]" />
-          <div className="absolute w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_#ffffff]" />
+        {/* Name — matches hero header style */}
+        <div className="text-center">
+          <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-white/30 mb-2">
+            Portfolio
+          </p>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-[0.25em] uppercase text-white">
+            James Aathithyan
+          </h1>
         </div>
+
+        {/* Progress bar track */}
+        <div className="w-full flex flex-col items-center gap-3">
+          <div className="w-full h-[1px] bg-white/10 relative overflow-hidden rounded-full">
+            {/* Glowing fill */}
+            <div
+              className="absolute left-0 top-0 h-full bg-white transition-all duration-300 ease-out rounded-full"
+              style={{ width: `${displayProgress}%` }}
+            />
+            {/* Leading cyan glow dot */}
+            <div
+              className="absolute top-1/2 -translate-y-1/2 w-[3px] h-[3px] rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(0,240,255,0.9)] transition-all duration-300 ease-out"
+              style={{ left: `calc(${displayProgress}% - 1.5px)` }}
+            />
+          </div>
+
+          {/* Progress label */}
+          <div className="flex items-center justify-between w-full">
+            <span className="text-[9px] font-mono tracking-[0.2em] uppercase text-white/25">
+              Loading 3D Scene
+            </span>
+            <span className="text-[9px] font-mono tracking-wider text-white/40">
+              {displayProgress}%
+            </span>
+          </div>
+        </div>
+
+        {/* Minimal spinning indicator */}
+        <div className="relative w-5 h-5 flex items-center justify-center">
+          <div className="w-full h-full rounded-full border border-white/15 border-t-white/70 animate-spin" />
+          <div className="absolute w-1 h-1 rounded-full bg-cyan-400/80 shadow-[0_0_6px_rgba(0,240,255,0.7)]" />
+        </div>
+      </div>
+
+      {/* Bottom label */}
+      <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+        <span className="text-[8px] font-mono tracking-[0.25em] uppercase text-white/15">
+          Full-Stack Developer
+        </span>
       </div>
     </div>
   );
 }
+
