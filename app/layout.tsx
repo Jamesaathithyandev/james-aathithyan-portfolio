@@ -23,11 +23,11 @@ export const metadata: Metadata = {
     "Final-year B.Tech Information Technology student at PPG Institute of Technology and full-stack developer specializing in MERN applications, REST APIs, and real-time systems.",
   icons: {
     icon: [
-      { url: "/favicon.ico?v=5" },
-      { url: "/james3d-logo.png?v=5", type: "image/png" },
+      { url: "/james3d-logo.png?v=6", type: "image/png" },
+      { url: "/favicon.ico?v=6", sizes: "any" },
     ],
-    shortcut: "/favicon.ico?v=5",
-    apple: "/james3d-logo.png?v=5",
+    shortcut: "/james3d-logo.png?v=6",
+    apple: "/james3d-logo.png?v=6",
   },
 };
 
@@ -43,9 +43,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} h-full antialiased dark`}
     >
       <head>
-        <link rel="icon" href="/favicon.ico?v=5" sizes="any" />
-        <link rel="icon" type="image/png" href="/james3d-logo.png?v=5" />
-        <link rel="apple-touch-icon" href="/james3d-logo.png?v=5" />
+        <link rel="icon" type="image/png" href="/james3d-logo.png?v=6" />
+        <link rel="icon" href="/favicon.ico?v=6" sizes="any" />
+        <link rel="shortcut icon" href="/james3d-logo.png?v=6" />
+        <link rel="apple-touch-icon" href="/james3d-logo.png?v=6" />
       </head>
       <body
         suppressHydrationWarning
