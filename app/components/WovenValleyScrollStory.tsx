@@ -170,7 +170,6 @@ export default function WovenValleyScrollStory() {
   const stageRef = useRef<HTMLDivElement>(null);
   const imageFrameRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const borderFrameRef = useRef<HTMLDivElement>(null);
   const ambientGlowRef = useRef<HTMLDivElement>(null);
   const vignetteOverlayRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -402,30 +401,6 @@ export default function WovenValleyScrollStory() {
         vignetteOverlayRef.current.style.opacity = vigOp.toFixed(3);
       }
 
-      // 4. Initial decorative border frame (fades smoothly as image unclips)
-      if (borderFrameRef.current) {
-        const borderOp = Math.max(0, 1 - easeProgress * 2.2);
-        if (borderOp <= 0.01) {
-          borderFrameRef.current.style.display = "none";
-        } else {
-          borderFrameRef.current.style.display = "block";
-          borderFrameRef.current.style.opacity = borderOp.toFixed(3);
-          borderFrameRef.current.style.width = `${initW}px`;
-          borderFrameRef.current.style.height = `${initH}px`;
-
-          const damp = Math.max(0, 1 - easeProgress * 1.5);
-          const imgTiltX = -ms.normY * 4 * damp;
-          const imgTiltY = ms.normX * 4 * damp;
-          const imgParallaxX = ms.normX * 10 * damp;
-          const imgParallaxY = ms.normY * 10 * damp;
-
-          borderFrameRef.current.style.transform = `translate(-50%, -50%) perspective(1000px) rotateX(${imgTiltX.toFixed(
-            2
-          )}deg) rotateY(${imgTiltY.toFixed(2)}deg) translate3d(${imgParallaxX.toFixed(
-            2
-          )}px, ${imgParallaxY.toFixed(2)}px, 0)`;
-        }
-      }
 
       // 5. Deep atmospheric ambient glow in initial state
       if (ambientGlowRef.current) {
@@ -593,17 +568,6 @@ export default function WovenValleyScrollStory() {
           }}
         />
 
-        {/* =========================================================================
-            DECORATIVE BORDER & GLOW FRAME
-            Renders exact 9:16 portrait frame bounds and fades out smoothly as image unclips
-        ========================================================================= */}
-        <div
-          ref={borderFrameRef}
-          className="absolute left-1/2 top-1/2 pointer-events-none rounded-[20px] border border-white/25 shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_50px_rgba(255,182,193,0.15)] z-20 will-change-[transform,opacity]"
-          style={{
-            transform: "translate(-50%, -50%)",
-          }}
-        />
 
         {/* =========================================================================
             CENTER EXPANDING IMAGE
