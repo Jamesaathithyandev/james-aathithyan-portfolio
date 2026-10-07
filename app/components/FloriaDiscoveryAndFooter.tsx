@@ -623,9 +623,10 @@ export default function FloriaDiscoveryAndFooter() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
 
-  // Contact form state
+  // Contact form state with real Web3Forms delivery and mailto fallback
   const [formState, setFormState] = useState({ name: "", email: "", message: "" });
-  const [submitted, setSubmitted] = useState(false);
+  const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
 
   // ZERO-LAG SPOTLIGHT: Update DOM directly to avoid triggering full 1000-line React re-renders on mousemove
   const handleSectionMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -636,11 +637,77 @@ export default function FloriaDiscoveryAndFooter() {
     spotlightRef.current.style.background = `radial-gradient(650px circle at ${x}px ${y}px, rgba(34, 211, 238, 0.04) 0%, rgba(244, 63, 94, 0.02) 40%, transparent 80%)`;
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
-    setFormState({ name: "", email: "", message: "" });
+    if (!formState.name.trim() || !formState.email.trim() || !formState.message.trim()) return;
+
+    setFormStatus("submitting");
+    setFeedbackMessage("");
+
+    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+
+    try {
+      if (accessKey && accessKey !== "YOUR_ACCESS_KEY_HERE" && accessKey.trim() !== "") {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            access_key: accessKey,
+            name: formState.name,
+            email: formState.email,
+            message: formState.message,
+            subject: `Portfolio Inquiry from ${formState.name}`,
+            from_name: `${formState.name} (via James Portfolio)`,
+          }),
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          setFormStatus("success");
+          setFeedbackMessage("Message dispatched successfully! James will reply shortly.");
+          setFormState({ name: "", email: "", message: "" });
+          setTimeout(() => {
+            setFormStatus("idle");
+            setFeedbackMessage("");
+          }, 6000);
+          return;
+        }
+      }
+
+      // If access key is not set or API errors, open email client prefilled to jamesaathithyandev@gmail.com
+      const mailtoUrl = `mailto:jamesaathithyandev@gmail.com?subject=${encodeURIComponent(
+        `Portfolio Inquiry from ${formState.name}`
+      )}&body=${encodeURIComponent(
+        `Name: ${formState.name}\nEmail: ${formState.email}\n\nMessage:\n${formState.message}`
+      )}`;
+      window.location.href = mailtoUrl;
+
+      setFormStatus("success");
+      setFeedbackMessage("Opening your email client to deliver to jamesaathithyandev@gmail.com...");
+      setFormState({ name: "", email: "", message: "" });
+      setTimeout(() => {
+        setFormStatus("idle");
+        setFeedbackMessage("");
+      }, 6000);
+    } catch (err) {
+      console.error("Submission error:", err);
+      const mailtoUrl = `mailto:jamesaathithyandev@gmail.com?subject=${encodeURIComponent(
+        `Portfolio Inquiry from ${formState.name}`
+      )}&body=${encodeURIComponent(
+        `Name: ${formState.name}\nEmail: ${formState.email}\n\nMessage:\n${formState.message}`
+      )}`;
+      window.location.href = mailtoUrl;
+      setFormStatus("success");
+      setFeedbackMessage("Opening email app to complete delivery...");
+      setFormState({ name: "", email: "", message: "" });
+      setTimeout(() => {
+        setFormStatus("idle");
+        setFeedbackMessage("");
+      }, 6000);
+    }
   };
 
   return (
@@ -1003,10 +1070,29 @@ export default function FloriaDiscoveryAndFooter() {
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-full bg-white text-black font-semibold text-xs tracking-widest uppercase hover:bg-zinc-200 transition-all duration-300 shadow-[0_0_25px_rgba(255,255,255,0.2)]"
+                disabled={formStatus === "submitting"}
+                className="w-full py-3.5 rounded-full bg-white text-black font-semibold text-xs tracking-widest uppercase hover:bg-zinc-200 transition-all duration-300 shadow-[0_0_25px_rgba(255,255,255,0.2)] disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {submitted ? "Message Sent Successfully ✓" : "Send Message →"}
+                {formStatus === "submitting" ? (
+                  <>
+                    <span className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                    <span>Transmitting...</span>
+                  </>
+                ) : formStatus === "success" ? (
+                  <>
+                    <span className="text-emerald-700 font-bold">✓</span>
+                    <span>Message Sent Successfully</span>
+                  </>
+                ) : (
+                  <span>Send Message →</span>
+                )}
               </button>
+
+              {feedbackMessage && (
+                <p className="text-[11px] font-mono text-emerald-400 text-center pt-1 leading-snug">
+                  {feedbackMessage}
+                </p>
+              )}
             </form>
           </ScrollReveal>
         </div>
