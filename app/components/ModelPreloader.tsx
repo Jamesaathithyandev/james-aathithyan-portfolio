@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 
 interface ModelPreloaderProps {
   progress: number;
@@ -13,35 +13,60 @@ export default function ModelPreloader({
   onFinished,
 }: ModelPreloaderProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [isCompletelyGone, setIsCompletelyGone] = useState(false);
+  const [bgColor, setBgColor] = useState<string>("#000000");
 
-  // Auto-play video on mount
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
+  // Sample the video's corner pixel to extract background color for seamless blending
+  const sampleBgColor = useCallback(() => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas || video.readyState < 2) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    canvas.width = 8;
+    canvas.height = 8;
+    try {
+      ctx.drawImage(video, 0, 0, 8, 8);
+      const px = ctx.getImageData(0, 0, 1, 1).data;
+      const hex = `#${px[0].toString(16).padStart(2, "0")}${px[1].toString(16).padStart(2, "0")}${px[2].toString(16).padStart(2, "0")}`;
+      setBgColor(hex);
+    } catch {
+      // Security error on cross-origin — keep black
     }
   }, []);
 
-  // When 3D model is loaded, smoothly bring the user to the main page
+  // Auto-play video on mount
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const tryPlay = () => video.play().catch(() => {});
+    video.addEventListener("canplay", tryPlay, { once: true });
+    video.addEventListener("loadeddata", sampleBgColor, { once: true });
+    tryPlay();
+    return () => {
+      video.removeEventListener("canplay", tryPlay);
+      video.removeEventListener("loadeddata", sampleBgColor);
+    };
+  }, [sampleBgColor]);
+
+  // When 3D model is loaded, smoothly fade out and reveal main page
   useEffect(() => {
     if (isReady && !isFadingOut) {
       const exitTimer = setTimeout(() => {
         setIsFadingOut(true);
         setTimeout(() => {
-          if (videoRef.current) {
-            videoRef.current.pause();
-          }
+          if (videoRef.current) videoRef.current.pause();
           setIsCompletelyGone(true);
           onFinished?.();
-        }, 700);
-      }, 500);
-
+        }, 800);
+      }, 400);
       return () => clearTimeout(exitTimer);
     }
   }, [isReady, isFadingOut, onFinished]);
 
-  // Fallback safety timeout (12s) to prevent being stuck on poor mobile networks
+  // Safety fallback after 15s in case model loading stalls
   useEffect(() => {
     const safetyTimer = setTimeout(() => {
       if (!isFadingOut) {
@@ -49,9 +74,9 @@ export default function ModelPreloader({
         setTimeout(() => {
           setIsCompletelyGone(true);
           onFinished?.();
-        }, 700);
+        }, 800);
       }
-    }, 12000);
+    }, 15000);
     return () => clearTimeout(safetyTimer);
   }, [isFadingOut, onFinished]);
 
@@ -61,37 +86,37 @@ export default function ModelPreloader({
     <div
       role="status"
       aria-label="Loading Intro"
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-[#000000] text-white select-none transition-all duration-700 ease-out overflow-hidden ${
+      style={{ backgroundColor: bgColor }}
+      className={`fixed inset-0 z-[100] flex items-center justify-center select-none transition-[opacity,transform] duration-[800ms] ease-out overflow-hidden ${
         isFadingOut
-          ? "opacity-0 scale-105 pointer-events-none blur-sm"
+          ? "opacity-0 scale-[1.04] pointer-events-none"
           : "opacity-100 scale-100"
       }`}
     >
-      {/* Seamless centered video element on pure black screen (no borders or card outlines) */}
-      <div className="relative w-[88vw] max-w-[460px] sm:max-w-[520px] md:max-w-[560px] aspect-[4/3] flex items-center justify-center bg-black overflow-hidden">
-        {/* Video Element */}
-        <video
-          ref={videoRef}
-          src="/intro.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          onCanPlay={(e) => {
-            e.currentTarget.play().catch(() => {});
-          }}
-          className="w-full h-full object-cover select-none pointer-events-none"
-        />
+      {/* Hidden canvas used only for background color sampling */}
+      <canvas ref={canvasRef} className="hidden" />
 
-        {/* Small spinning icon in the center */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="relative w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center">
-            {/* Spinning outer ring */}
-            <div className="w-full h-full rounded-full border-[2.5px] border-white/25 border-t-white border-r-white/80 animate-spin shadow-[0_0_15px_rgba(255,255,255,0.4)]" />
-            {/* Small center dot */}
-            <div className="absolute w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_#ffffff]" />
-          </div>
+      {/* Full-screen looping video — fills the viewport, background blends with sampled bgColor */}
+      <video
+        ref={videoRef}
+        src="/intro.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        onLoadedData={sampleBgColor}
+        onCanPlay={(e) => {
+          e.currentTarget.play().catch(() => {});
+        }}
+        className="absolute inset-0 w-full h-full object-contain select-none pointer-events-none"
+      />
+
+      {/* Small spinning loading indicator — always centered */}
+      <div className="relative z-10 flex items-center justify-center pointer-events-none">
+        <div className="relative w-9 h-9 flex items-center justify-center">
+          <div className="w-full h-full rounded-full border-[2.5px] border-white/20 border-t-white border-r-white/70 animate-spin shadow-[0_0_18px_rgba(255,255,255,0.35)]" />
+          <div className="absolute w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_#ffffff]" />
         </div>
       </div>
     </div>
