@@ -1097,7 +1097,7 @@ export default function FloriaDiscoveryAndFooter() {
             <img
               src="/james3d-logo.png"
               alt="James3D Logo"
-              className="w-5 h-5 rounded-full object-cover border border-white/20 shadow-[0_0_8px_rgba(0,240,255,0.3)]"
+              className="w-5 h-5 object-contain drop-shadow-[0_0_8px_rgba(0,240,255,0.4)]"
             />
             <span>© 2026 JAMES AATHITHYAN • B.TECH IT // PPG INSTITUTE OF TECHNOLOGY</span>
           </div>

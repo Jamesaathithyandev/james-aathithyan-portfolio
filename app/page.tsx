@@ -243,7 +243,7 @@ export default function FloriaHeroPage() {
             <img
               src="/james3d-logo.png"
               alt="James3D Logo"
-              className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-white/30 shadow-[0_0_10px_rgba(0,240,255,0.4)] transition-transform duration-300 group-hover:scale-110"
+              className="w-5 h-5 sm:w-6 sm:h-6 object-contain drop-shadow-[0_0_8px_rgba(0,240,255,0.45)] transition-transform duration-300 group-hover:scale-110"
             />
             <span className="text-[11px] sm:text-xs md:text-[13px] font-bold tracking-[0.22em] uppercase text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               JAMES AATHITHYAN
